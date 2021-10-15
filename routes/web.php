@@ -16,6 +16,8 @@ use \App\Http\Controllers\MemesController;
 */
 
 Route::resource('/', MemesController::class);
+Route::get('/upvote/{id}', [App\Http\Controllers\MemesController::class, 'upvote']);
+Route::get('/downvote/{id}', [App\Http\Controllers\MemesController::class, 'downvote']);
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

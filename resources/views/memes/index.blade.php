@@ -14,8 +14,8 @@
                 </p>
             </div>
             <div class="card-footer">
-                <span class="text-success">{{ $meme->up_votes_count }}</span> <a href="" class="btn btn-success"><i class="fas fa-arrow-up"></i></a>
-                <a href="" class="btn btn-danger"><i class="fas fa-arrow-down"></i></a>  <span class="text-danger">{{ $meme->down_votes_count }}</span>
+                <span class="text-success">{{ $meme->up_votes_count }}</span> <a href="upvote/{{$meme->id}}" class="btn btn-success"><i class="fas fa-arrow-up"></i></a>
+                <a href="downvote/{{$meme->id}}"" class="btn btn-danger"><i class="fas fa-arrow-down"></i></a>  <span class="text-danger">{{ $meme->down_votes_count }}</span>
                 <span class="float-right">Uploaded by <b>username</b> at <b>{{ $meme->created_at }}</b></span>
             </div>
         </div>
