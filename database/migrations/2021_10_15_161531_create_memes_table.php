@@ -17,8 +17,8 @@ class CreateMemesTable extends Migration
             $table->increments('id');
             $table->mediumText('title');
             $table->string('image_path');
-            $table->unsignedInteger('up_votes_count');
-            $table->unsignedInteger('down_votes_count');
+            $table->unsignedInteger('up_votes_count')->default(0);
+            $table->unsignedInteger('down_votes_count')->default(0);
             $table->unsignedInteger('user_id');
             $table->timestamps();
         });

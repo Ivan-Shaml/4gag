@@ -21,7 +21,7 @@ class MemesController extends Controller
      */
     public function index()
     {
-        $memes = Meme::all();
+        $memes = Meme::orderBy('id', 'desc')->get();
 
         return view('memes.index', ['memes' => $memes]);
     }
@@ -31,9 +31,24 @@ class MemesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'image' => 'required|mimes:jpg,png,jpeg,gif|max:5048'
+        ]);
+
+        $newImageName = time().'-'.$request->title . '.'.$request->image->extension();
+
+        $request->image->move(public_path('images'), $newImageName);
+
+        $car = Meme::create([
+            'title' => $request->input('title'),
+            'image_path' => $newImageName,
+            'user_id' => auth()->user()->getAuthIdentifier()
+        ]);
+
+        return redirect('/');
     }
 
     /**
@@ -94,9 +109,9 @@ class MemesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
+        return view('memes.create');
     }
 
     /**

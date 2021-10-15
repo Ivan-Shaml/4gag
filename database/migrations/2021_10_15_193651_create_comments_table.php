@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserVotesTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateUserVotesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_votes', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
             $table->unsignedInteger('meme_id');
-            $table->boolean('vote_type'); //true = UP vote false = DOWN vote
+            $table->unsignedInteger('user_id');
+            $table->longText('comment_text');
+            $table->unsignedInteger('up_votes_count')->default(0);
+            $table->unsignedInteger('down_votes_count')->default(0);
             $table->timestamps();
             $table->foreign('meme_id')
                 ->references('id')
@@ -37,6 +39,6 @@ class CreateUserVotesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_votes');
+        Schema::dropIfExists('comments');
     }
 }

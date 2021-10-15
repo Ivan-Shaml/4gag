@@ -45,4 +45,8 @@ class User extends Authenticatable
     public function memes(){
         return $this->hasMany(Meme::class);
     }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
 }
