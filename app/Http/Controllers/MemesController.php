@@ -58,7 +58,7 @@ class MemesController extends Controller
      */
     public function upvote(Request $request, $id)
     {
-        $meme = Meme::find($id) ?? abort(404);
+        $meme = Meme::find($id) ?? json_encode(['status' => 404]);
         $userId = auth()->user();
         if ($userId != null)
             $userId = $userId->getAuthIdentifier();
@@ -66,18 +66,27 @@ class MemesController extends Controller
 
         $result = UserVotes::where('user_id', $userId)->where('meme_id', $meme->id)->first();
 
-        if(empty($result)) {
+        if (empty($result)) {
             UserVotes::create([
-               'user_id' => $userId, 'meme_id' => $meme->id, 'vote_type' => true
-               ]);
-            Meme::where('id', $meme->id)->update(['up_votes_count'=>$meme->up_votes_count+1]);
-        }elseif (!empty($result) && $result->vote_type == 0) {
-            UserVotes::where('id', $result->id)->update(['vote_type' => true ]);
-            $meme->down_votes_count > 0 ? Meme::where('id', $meme->id)->update(['down_votes_count'=>$meme->down_votes_count-1, 'up_votes_count'=>$meme->up_votes_count+1])
-                : Meme::where('id', $meme->id)->update(['up_votes_count'=>$meme->up_votes_count+1]);
+                'user_id' => $userId, 'meme_id' => $meme->id, 'vote_type' => true
+            ]);
+            Meme::where('id', $meme->id)->update(['up_votes_count' => $meme->up_votes_count + 1]);
+            $meme->up_votes_count++;
+        } elseif (!empty($result) && $result->vote_type == 0) {
+            UserVotes::where('id', $result->id)->update(['vote_type' => true]);
+            if ($meme->down_votes_count > 0) {
+                Meme::where('id', $meme->id)->update(['down_votes_count' => $meme->down_votes_count - 1, 'up_votes_count' => $meme->up_votes_count + 1]);
+                $meme->up_votes_count++;
+                $meme->down_votes_count--;
+            } else {
+                Meme::where('id', $meme->id)->update(['up_votes_count' => $meme->up_votes_count + 1]);
+                $meme->up_votes_count++;
+            }
+
         }
 
-        return redirect('/');
+        return json_encode(['meme_id'=>$meme->id ,'up_votes'=>$meme->up_votes_count, 'down_votes'=>$meme->down_votes_count]);
+
     }
 
     public function downvote($id)
@@ -95,13 +104,20 @@ class MemesController extends Controller
                 'user_id' => $userId, 'meme_id' => $meme->id, 'vote_type' => false
             ]);
             Meme::where('id', $meme->id)->update(['down_votes_count'=>$meme->down_votes_count+1]);
+            $meme->down_votes_count++;
         }elseif (!empty($result) && $result->vote_type == 1) {
             UserVotes::where('id', $result->id)->update(['vote_type' => false ]);
-            $meme->up_votes_count > 0 ? Meme::where('id', $meme->id)->update(['up_votes_count'=>$meme->up_votes_count-1, 'down_votes_count'=>$meme->down_votes_count+1])
-                : Meme::where('id', $meme->id)->update(['down_votes_count'=>$meme->down_votes_count+1]);
+            if($meme->up_votes_count > 0) {
+                Meme::where('id', $meme->id)->update(['up_votes_count' => $meme->up_votes_count - 1, 'down_votes_count' => $meme->down_votes_count + 1]);
+                $meme->up_votes_count--;
+                $meme->down_votes_count++;
+            } else {
+                Meme::where('id', $meme->id)->update(['down_votes_count' => $meme->down_votes_count + 1]);
+                $meme->down_votes_count++;
+            }
         }
 
-        return redirect('/');
+        return json_encode(['meme_id'=>$meme->id ,'up_votes'=>$meme->up_votes_count, 'down_votes'=>$meme->down_votes_count]);
     }
     /**
      * Store a newly created resource in storage.
