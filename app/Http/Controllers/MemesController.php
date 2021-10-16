@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Meme;
 use App\Models\UserVotes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use function PHPUnit\Framework\isEmpty;
 
 class MemesController extends Controller
@@ -23,7 +26,7 @@ class MemesController extends Controller
     {
         $memes = Meme::orderBy('id', 'desc')->get();
 
-        return view('memes.index', ['memes' => $memes]);
+        return view('memes.index')->with('memes', $memes);
     }
 
     /**
@@ -38,7 +41,7 @@ class MemesController extends Controller
             'image' => 'required|mimes:jpg,png,jpeg,gif|max:5048'
         ]);
 
-        $newImageName = time().'-'.$request->title . '.'.$request->image->extension();
+        $newImageName = time().'-' . Str::random(10) . '.'.$request->image->extension();
 
         $request->image->move(public_path('images'), $newImageName);
 
@@ -136,9 +139,10 @@ class MemesController extends Controller
      * @param  \App\Models\Meme  $meme
      * @return \Illuminate\Http\Response
      */
-    public function show(Meme $meme)
+    public function showmymemes()
     {
-        //
+        $memes = Meme::where('user_id', Auth::user()->getAuthIdentifier())->get();
+        return view ('memes.index')->with('memes', $memes)->with('title', "Showing " . Auth::user()->name . "'s memes.");
     }
 
     /**

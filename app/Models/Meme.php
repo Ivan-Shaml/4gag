@@ -12,7 +12,7 @@ class Meme extends Model
 
     protected $table='memes';
     protected $primaryKey = 'id';
-    protected $fillable = ['image_path', 'title', 'up_votes_count', 'down_votes_count', 'user_id'];
+    protected $fillable = ['image_path', 'title', 'up_votes_count', 'down_votes_count', 'user_id', 'comments_count'];
 
     public function user()
     {

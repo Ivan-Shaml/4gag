@@ -11,4 +11,9 @@ class usersCommentsVotes extends Model
     protected $table='users_comments_votes';
     protected $primaryKey = 'id';
     protected $fillable = ['user_id', 'comment_id', 'vote_type'];
+
+    public function votes()
+    {
+        return $this->belongsTo(Comment::class);
+    }
 }

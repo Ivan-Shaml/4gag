@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success m-3"><i class="fas fa-plus"></i> Add</button>
+        <button type="submit" class="btn btn-success m-3"><i class="fas fa-file-upload"></i>  Upload</button>
     </form>
 </div>
 

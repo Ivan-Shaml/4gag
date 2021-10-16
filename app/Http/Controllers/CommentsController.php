@@ -58,6 +58,8 @@ class CommentsController extends Controller
             'user_id' => auth()->user()->getAuthIdentifier(),
         ]);
 
+        Meme::where('id', $request->input('meme_id'))->increment('comments_count', 1);
+
         return json_encode(['comment_id' => $comment->id, 'comment_text' => $comment->comment_text, 'user_name'=>Auth::user()->name, 'posted_at'=>date('Y-m-d h:m:s')]);
     }
 
