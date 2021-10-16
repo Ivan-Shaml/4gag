@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Meme;
+use App\Models\User;
 use App\Models\UserVotes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isNull;
 
 class MemesController extends Controller
 {
@@ -26,7 +28,11 @@ class MemesController extends Controller
     {
         $memes = Meme::orderBy('id', 'desc')->get();
 
-        return view('memes.index')->with('memes', $memes);
+        $isAdmin = false;
+        if (!is_null(Auth::user()))
+            User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
+
+        return view('memes.index', ['memes' => $memes, 'isAdmin' => $isAdmin]);
     }
 
     /**
@@ -142,7 +148,12 @@ class MemesController extends Controller
     public function showmymemes()
     {
         $memes = Meme::where('user_id', Auth::user()->getAuthIdentifier())->get();
-        return view ('memes.index')->with('memes', $memes)->with('title', "Showing " . Auth::user()->name . "'s memes.");
+
+        $isAdmin = false;
+        if (!is_null(Auth::user()))
+            User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
+
+        return view ('memes.index')->with('memes', $memes)->with('title', "Showing " . Auth::user()->name . "'s memes.")->with('isAdmin', $isAdmin);
     }
 
     /**
@@ -176,6 +187,11 @@ class MemesController extends Controller
      */
     public function destroy(Meme $meme)
     {
-        //
+        User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() ?? abort(403);
+
+        unlink(realpath('images/' . $meme->image_path));
+        $meme->delete();
+
+        return redirect('/');
     }
 }

@@ -22,4 +22,7 @@ class Comment extends Model
     {
         return $this->belongsTo(Meme::class);
     }
+    public function commentVotes(){
+        return $this->hasMany(usersCommentsVotes::class);
+    }
 }

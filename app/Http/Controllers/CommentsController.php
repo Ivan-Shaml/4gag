@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isNull;
@@ -73,9 +74,13 @@ class CommentsController extends Controller
     {
         $id ?? abort(404);
 
+        $isAdmin = false;
+        if (!is_null(Auth::user()))
+            User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
+
         $comments = Comment::orderBy('id', 'desc')->where('meme_id', $id)->get() ?? abort(404);
         $meme = Meme::find($id) ?? abort(404);
-        return view('comments.show')->with('comments', $comments)->with('meme', $meme);
+        return view('comments.show',['comments' => $comments, 'meme' => $meme, 'isAdmin' => $isAdmin]);
     }
 
     /**

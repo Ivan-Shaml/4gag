@@ -20,11 +20,12 @@ Auth::routes();
 
 Route::resource('/', MemesController::class);
 Route::resource('/comments', CommentsController::class);
+Route::delete('/{meme}',  [MemesController::class, 'destroy']);
 
-Route::get('/upvote/{id}', [App\Http\Controllers\MemesController::class, 'upvote']);
-Route::get('/downvote/{id}', [App\Http\Controllers\MemesController::class, 'downvote']);
-Route::get('/showmymemes', [App\Http\Controllers\MemesController::class, 'showmymemes']);
-Route::get('/comments/upvote/{id}', [App\Http\Controllers\CommentsController::class, 'upvote']);
-Route::get('/comments/downvote/{id}', [App\Http\Controllers\CommentsController::class, 'downvote']);
+Route::get('/upvote/{id}', [MemesController::class, 'upvote']);
+Route::get('/downvote/{id}', [MemesController::class, 'downvote']);
+Route::get('/showmymemes', [MemesController::class, 'showmymemes']);
+Route::get('/comments/upvote/{id}', [CommentsController::class, 'upvote']);
+Route::get('/comments/downvote/{id}', [CommentsController::class, 'downvote']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
