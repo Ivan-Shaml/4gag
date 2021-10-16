@@ -42,7 +42,7 @@ class MemesController extends Controller
 
         $request->image->move(public_path('images'), $newImageName);
 
-        $car = Meme::create([
+        Meme::create([
             'title' => $request->input('title'),
             'image_path' => $newImageName,
             'user_id' => auth()->user()->getAuthIdentifier()

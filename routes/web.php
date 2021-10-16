@@ -23,5 +23,7 @@ Route::resource('/comments', CommentsController::class);
 
 Route::get('/upvote/{id}', [App\Http\Controllers\MemesController::class, 'upvote']);
 Route::get('/downvote/{id}', [App\Http\Controllers\MemesController::class, 'downvote']);
+Route::get('/comments/upvote/{id}', [App\Http\Controllers\CommentsController::class, 'upvote']);
+Route::get('/comments/downvote/{id}', [App\Http\Controllers\CommentsController::class, 'downvote']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
