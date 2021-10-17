@@ -16,7 +16,7 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('meme_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->longText('comment_text');
             $table->unsignedInteger('up_votes_count')->default(0);
             $table->unsignedInteger('down_votes_count')->default(0);

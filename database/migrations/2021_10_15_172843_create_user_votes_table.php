@@ -15,7 +15,7 @@ class CreateUserVotesTable extends Migration
     {
         Schema::create('user_votes', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedInteger('meme_id');
             $table->boolean('vote_type'); //true = UP vote false = DOWN vote
             $table->timestamps();

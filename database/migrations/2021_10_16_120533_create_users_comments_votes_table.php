@@ -16,7 +16,7 @@ class CreateUsersCommentsVotesTable extends Migration
         Schema::create('users_comments_votes', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('comment_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('user_id');
             $table->boolean('vote_type')->default(false);
             $table->timestamps();
             $table->foreign('comment_id')
