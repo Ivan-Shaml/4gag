@@ -2,7 +2,10 @@
 
 @section('content')
     <link rel="stylesheet" href="{{asset('css/comment_section.css')}}">
-    <div class="d-flex justify-content-center">
+    <div class="mt-5 d-flex justify-content-center container alert alert-success w-50 text-center position-sticky" role="alert" id="alert_box1" style="display: none !important;">
+        Your comment has been posted successfully.
+    </div>
+    <div class="d-flex justify-content-center" id="meme_id_{{$meme->id}}">
         <div class="card">
             <div class="card-header h3">{{ $meme->title }}</div>
             <img class="card-img-top img-fluid" name="meme" id="{{ $meme->id }}" src="{{ asset('images/' . $meme->image_path) }}" />
@@ -10,11 +13,7 @@
                 <span class="text-success font-weight-bolder" id="up_votes_count{{$meme->id}}">{{ $meme->up_votes_count }}</span> <button onclick="upvote({{ $meme->id }})" class="btn btn-success"><i class="fas fa-arrow-up"></i></button>
                 <button onclick="downvote({{ $meme->id }})" class="btn btn-danger"><i class="fas fa-arrow-down"></i></button>  <span class="text-danger font-weight-bolder" id="down_votes_count{{$meme->id}}">{{ $meme->down_votes_count }}</span>
                 @if($isAdmin)
-                    <form action="/{{ $meme->id }}" method="post" class="text-center d-sm-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger"> <i class="fas fa-trash-alt"></i> </button>
-                    </form>
+                    <button class="btn btn-danger float-right ml-3" onclick="deleteMeme({{ $meme->id }})"> <i class="fas fa-trash-alt"></i> </button>
                 @endif
                 <span class="float-right">Uploaded by <b>{{ $meme->user->name }}</b> at <b>{{ $meme->created_at }}</b></span>
             </div>
@@ -48,10 +47,13 @@
     <div class="container">
         <div class="row d-flex justify-content-center" id="comment_section">
             @foreach($comments as $comment)
-           <div class="col-md-8">
+           <div class="col-md-8" id="comment_id_{{$comment->id}}">
                 <div class="media g-mb-30 media-comment">
                     <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
                         <div class="g-mb-15">
+                            @if($isAdmin)
+                                <button onclick="deleteComment({{$comment->id}})" class="btn btn-danger float-right"> <i class="fas fa-trash-alt"></i> </button>
+                            @endif
                             <h5 class="h5 g-color-gray-dark-v1 mb-3">Posted by {{ $comment->user->name }}</h5>
                             <span class="g-color-gray-dark-v4 g-font-size-12">Posted on {{ $comment->updated_at }}</span>
                         </div>

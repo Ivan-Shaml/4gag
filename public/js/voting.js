@@ -121,3 +121,69 @@ function commentUpvote(id){
         $('#alert_box').show(500);
     });
 }
+
+function deleteMeme(id){
+    let csrfToken = $('input[name="_token"]').val();
+    let request = $.ajax({
+        url: `/${id}`,
+        method: "DELETE",
+        data: {_token: csrfToken, _method: 'DELETE'},
+        dataType: "html"
+    });
+
+    request.done(function(data, textStatus) {
+        if (textStatus === "success"){
+            data = JSON.parse(data);
+            $(`#meme_id_${data.meme_id}`).remove();
+            let alertBox = $('#alert_box1');
+            alertBox.text(data.message);
+            alertBox.show().delay(1500).fadeOut(1000, function (){
+                $('#alert_box1').attr("style", "display: none !important")
+            });
+        }
+    });
+
+    request.fail(function (xhr, textStatus, errorThrown){
+        let errorMessage = xhr.status + ' ' + xhr.statusText;
+        let alertBox = $('#alert_box1');
+        alertBox.text(errorMessage);
+        alertBox.removeClass('alert-success');
+        alertBox.addClass('alert-danger');
+        alertBox.show(500);
+    });
+}
+
+function deleteComment(id){
+    let csrfToken = $('input[name="_token"]').val();
+    let request = $.ajax({
+        url: `/comments/${id}`,
+        method: "DELETE",
+        data: {_token: csrfToken, _method: 'DELETE'},
+        dataType: "html"
+    });
+
+    request.done(function(data, textStatus) {
+        if (textStatus === "success"){
+            data = JSON.parse(data);
+            $(`#comment_id_${data.comment_id}`).remove();
+            let commentsTotalCount = $('#comments_total_count').text();
+            commentsTotalCount = commentsTotalCount.substr(0, commentsTotalCount.indexOf(' '));
+            commentsTotalCount--;
+            $('#comments_total_count').text(`${commentsTotalCount} Comments`);
+            let alertBox = $('#alert_box');
+            alertBox.text(data.message);
+            alertBox.show().delay(1500).fadeOut(1000, function (){
+                $('#alert_box').attr("style", "display: none !important")
+            });
+        }
+    });
+
+    request.fail(function (xhr, textStatus, errorThrown){
+        let errorMessage = xhr.status + ' ' + xhr.statusText;
+        let alertBox = $('#alert_box');
+        alertBox.text(errorMessage);
+        alertBox.removeClass('alert-success');
+        alertBox.addClass('alert-danger');
+        alertBox.show(500);
+    });
+}

@@ -5,8 +5,12 @@
     <h3 class="h3 text-center">{{$title}}</h3>
 @endif
 
+<div class="mt-5 d-flex justify-content-center container alert alert-success w-50 text-center position-sticky" role="alert" id="alert_box1" style="display: none !important;">
+    Your comment has been posted successfully.
+</div>
+
     @foreach($memes as $meme)
-    <div class="mt-5 mb-5 d-flex justify-content-center container">
+    <div class="mt-5 mb-5 d-flex justify-content-center container" id="meme_id_{{$meme->id}}">
         <div class="row">
             <div class="col-lg-10 d-flex align-items-stretch">
         <div class="card">
@@ -17,11 +21,7 @@
                 <button onclick="downvote({{$meme->id}})" class="btn btn-danger"><i class="fas fa-arrow-down"></i></button>  <span class="text-danger font-weight-bolder" id="down_votes_count{{$meme->id}}">{{ $meme->down_votes_count }}</span>
                 <a class="ml-3 btn btn-primary" href="comments/{{ $meme->id }}"><i class="fas fa-comments"></i> {{ $meme->comments_count }}</a>
                 @if($isAdmin)
-                    <form action="/{{ $meme->id }}" method="post" class="text-center d-sm-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger"> <i class="fas fa-trash-alt"></i> </button>
-                    </form>
+                    <button class="btn btn-danger" onclick="deleteMeme({{ $meme->id }})"> <i class="fas fa-trash-alt"></i> </button>
                 @endif
                 <span class="float-right">Uploaded by <b>{{ $meme->user->name }}</b> at <b>{{ $meme->created_at }}</b></span>
             </div>

@@ -114,7 +114,12 @@ class CommentsController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() ?? abort(403);
+
+        $comment->delete();
+        Meme::where('id', $comment->meme_id)->decrement('comments_count', 1);
+
+        return json_encode(['comment_id'=>$comment->id,'message'=>'Comment has been deleted']);
     }
 
     public function downvote($id)

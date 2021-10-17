@@ -192,6 +192,6 @@ class MemesController extends Controller
         unlink(realpath('images/' . $meme->image_path));
         $meme->delete();
 
-        return redirect('/');
+        return json_encode(['meme_id'=>$meme->id, 'message'=>"Meme has been deleted"]);
     }
 }
