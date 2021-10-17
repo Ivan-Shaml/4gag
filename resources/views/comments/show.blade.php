@@ -13,7 +13,7 @@
                 <span class="text-success font-weight-bolder" id="up_votes_count{{$meme->id}}">{{ $meme->up_votes_count }}</span> <button onclick="upvote({{ $meme->id }})" class="btn btn-success"><i class="fas fa-arrow-up"></i></button>
                 <button onclick="downvote({{ $meme->id }})" class="btn btn-danger"><i class="fas fa-arrow-down"></i></button>  <span class="text-danger font-weight-bolder" id="down_votes_count{{$meme->id}}">{{ $meme->down_votes_count }}</span>
                 @if($isAdmin)
-                    <button class="btn btn-danger float-right ml-3" onclick="deleteMeme({{ $meme->id }})"> <i class="fas fa-trash-alt"></i> </button>
+                    <button class="btn btn-danger float-right ml-3" onclick="deletePopup({{ $meme->id }}, 'Meme')"> <i class="fas fa-trash-alt"></i> </button>
                 @endif
                 <span class="float-right">Uploaded by <a href="/sumemes/{{$meme->user->id}}"> <b>{{ $meme->user->name }}</b></a> at <b>{{ $meme->created_at }}</b></span>
             </div>
@@ -52,7 +52,7 @@
                     <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
                         <div class="g-mb-15">
                             @if($isAdmin)
-                                <button onclick="deleteComment({{$comment->id}})" class="btn btn-danger float-right"> <i class="fas fa-trash-alt"></i> </button>
+                                <button onclick="deletePopup({{$comment->id}}, 'Comment')" class="btn btn-danger float-right"> <i class="fas fa-trash-alt"></i> </button>
                             @endif
                             <h5 class="h5 g-color-gray-dark-v1 mb-3">Posted by {{ $comment->user->name }}</h5>
                             <span class="g-color-gray-dark-v4 g-font-size-12">Posted on {{ $comment->updated_at }}</span>

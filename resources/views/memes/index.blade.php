@@ -21,7 +21,7 @@
                 <button onclick="downvote({{$meme->id}})" class="btn btn-danger"><i class="fas fa-arrow-down"></i></button>  <span class="text-danger font-weight-bolder" id="down_votes_count{{$meme->id}}">{{ $meme->down_votes_count }}</span>
                 <a class="ml-3 btn btn-primary" href="/comments/{{ $meme->id }}"><i class="fas fa-comments"></i> {{ $meme->comments_count }}</a>
                 @if($isAdmin)
-                    <button class="btn btn-danger" onclick="deleteMeme({{ $meme->id }})"> <i class="fas fa-trash-alt"></i> </button>
+                    <button class="btn btn-danger" onclick="deletePopup({{ $meme->id }}, 'Meme')"> <i class="fas fa-trash-alt"></i> </button>
                 @endif
                 <span class="float-right">Uploaded by <a href="/sumemes/{{$meme->user->id}}"> <b>{{ $meme->user->name }}</b></a> at <b>{{ $meme->created_at }}</b></span>
             </div>

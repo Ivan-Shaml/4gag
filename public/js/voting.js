@@ -128,6 +128,7 @@ function commentUpvote(id){
 }
 
 function deleteMeme(id){
+    $(`#popup_${id}`).remove();
     let csrfToken = $('input[name="_token"]').val();
     let request = $.ajax({
         url: `/${id}`,
@@ -159,6 +160,7 @@ function deleteMeme(id){
 }
 
 function deleteComment(id){
+    $(`#popup_${id}`).remove();
     let csrfToken = $('input[name="_token"]').val();
     let request = $.ajax({
         url: `/comments/${id}`,
@@ -191,4 +193,19 @@ function deleteComment(id){
         alertBox.addClass('alert-danger');
         alertBox.show(500);
     });
+}
+
+function deletePopup(id, type) {
+    $(`#popup_${id}`).remove();
+    let popup = `
+        <div class="mt-4 mb-4 d-flex container alert alert-info w-50 position-sticky" role="alert" id="popup_${id}">
+            <p class="mr-auto p-2 m-1">Are you sure you want to delete this ${type} ?</p>
+            <button class="btn btn-sm btn-danger p-2 m-1" onclick="delete${type}(${id})">Delete</button>
+            <button class="float-right btn btn-sm btn-primary p-2 m-1" data-dismiss="alert" aria-hidden="true">Cancel</button>
+        </div>
+    `;
+    if(type === "Meme")
+        $(popup).insertAfter($(`#meme_id_${id}`));
+    else if(type === "Comment")
+        $(popup).insertAfter($(`#comment_id_${id}`));
 }
