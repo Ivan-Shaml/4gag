@@ -23,6 +23,7 @@ Route::resource('/comments', CommentsController::class);
 Route::delete('/{meme}',  [MemesController::class, 'destroy']);
 
 Route::get('/upvote/{id}', [MemesController::class, 'upvote']);
+Route::get('/sumemes/{id}', [MemesController::class, 'sumemes']);
 Route::get('/downvote/{id}', [MemesController::class, 'downvote']);
 Route::get('/showmymemes', [MemesController::class, 'showmymemes']);
 Route::get('/comments/upvote/{id}', [CommentsController::class, 'upvote']);

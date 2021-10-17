@@ -15,7 +15,7 @@
                 @if($isAdmin)
                     <button class="btn btn-danger float-right ml-3" onclick="deleteMeme({{ $meme->id }})"> <i class="fas fa-trash-alt"></i> </button>
                 @endif
-                <span class="float-right">Uploaded by <b>{{ $meme->user->name }}</b> at <b>{{ $meme->created_at }}</b></span>
+                <span class="float-right">Uploaded by <a href="/sumemes/{{$meme->user->id}}"> <b>{{ $meme->user->name }}</b></a> at <b>{{ $meme->created_at }}</b></span>
             </div>
         </div>
     </div>

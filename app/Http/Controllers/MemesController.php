@@ -148,12 +148,13 @@ class MemesController extends Controller
     public function showmymemes()
     {
         $memes = Meme::where('user_id', Auth::user()->getAuthIdentifier())->get();
+        $title = "Showing " . Auth::user()->name . "'s memes.";
 
         $isAdmin = false;
         if (!is_null(Auth::user()))
             User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
 
-        return view ('memes.index')->with('memes', $memes)->with('title', "Showing " . Auth::user()->name . "'s memes.")->with('isAdmin', $isAdmin);
+        return view ('memes.index', ['memes' => $memes, 'title' => $title, 'isAdmin' => $isAdmin]);
     }
 
     /**
@@ -193,5 +194,18 @@ class MemesController extends Controller
         $meme->delete();
 
         return json_encode(['meme_id'=>$meme->id, 'message'=>"Meme has been deleted"]);
+    }
+
+    public function sumemes($id)
+    {
+      $user = User::find($id) ?? abort(404);
+      $memes = Meme::where('user_id', $id)->get();
+      $title = "Showing " . $user->name . "'s memes.";
+
+      $isAdmin = false;
+      if (!is_null(Auth::user()))
+        User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
+
+      return view ('memes.index', ['memes' => $memes, 'title' => $title, 'isAdmin' => $isAdmin]);
     }
 }
