@@ -76,15 +76,19 @@ function postComment(){
             commentsTotalCount++;
             $('#comments_total_count').text(`${commentsTotalCount} Comments`);
 
-            $('#alert_box').show(500);
+            let alertBox = $('#alert_box');
+            alertBox.show().delay(1500).fadeOut(1000, function (){
+                $('#alert_box').attr("style", "display: none !important")
+            });
         }
     }).fail(function (xhr, textStatus, errorThrown){
         xhr.responseText = JSON.parse(xhr.responseText);
         let errorMessage = xhr.status + ' ' + xhr.responseText.message;
-        $('#alert_box').text(errorMessage);
-        $('#alert_box').removeClass('alert-success');
-        $('#alert_box').addClass('alert-danger');
-        $('#alert_box').show(500);
+        let alertBox = $('#alert_box');
+        alertBox.text(errorMessage);
+        alertBox.removeClass('alert-success');
+        alertBox.addClass('alert-danger');
+        alertBox.show(500);
     });
 }
 
@@ -98,10 +102,11 @@ function commentDownvote(id){
     }).fail(function (xhr, textStatus, errorThrown){
         xhr.responseText = JSON.parse(xhr.responseText);
         let errorMessage = xhr.status + ' ' + xhr.responseText.message;
-        $('#alert_box').text(errorMessage);
-        $('#alert_box').removeClass('alert-success');
-        $('#alert_box').addClass('alert-danger');
-        $('#alert_box').show(500);
+        let alertBox = $('#alert_box');
+        alertBox.text(errorMessage);
+        alertBox.removeClass('alert-success');
+        alertBox.addClass('alert-danger');
+        alertBox.show(500);
     });
 }
 
