@@ -190,8 +190,8 @@ class MemesController extends Controller
     {
         User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() ?? abort(403);
 
-        unlink(realpath('images/' . $meme->image_path));
-        $meme->delete();
+        $path = realpath('images/' . $meme->image_path);
+        file_exists($path) ? [unlink($path), $meme->delete()] : $meme->delete();
 
         return json_encode(['meme_id'=>$meme->id, 'message'=>"Meme has been deleted"]);
     }
