@@ -205,16 +205,27 @@ class MemesController extends Controller
         return json_encode(['meme_id'=>$meme->id, 'message'=>"Meme has been deleted"]);
     }
 
-    public function sumemes($id)
+    public function sumemes($id, Request $request)
     {
       $user = User::find($id) ?? abort(404);
-      $memes = Meme::where('user_id', $id)->get();
-      $title = "Showing " . $user->name . "'s memes.";
 
+      $memes = Meme::where('user_id', $id)->paginate(2);
+
+      if ($memes->currentPage() == 1 && $memes->isEmpty()) return view('memes.empty');
+      if ($memes->isEmpty()) abort(404);
+
+      $title = "Showing " . $user->name . "'s memes.";
       $isAdmin = false;
+
       if (!is_null(Auth::user()))
         User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
 
-      return view ('memes.index', ['memes' => $memes, 'title' => $title, 'isAdmin' => $isAdmin]);
+        if ($request->ajax())
+        {
+            $view = view('memes.post', compact('memes','isAdmin', 'title'))->render();
+            return response()->json(['html'=>$view]);
+        }
+
+        return view('memes.index', ['memes' => $memes, 'title' => $title, 'isAdmin' => $isAdmin]);
     }
 }
