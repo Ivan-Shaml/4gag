@@ -24,13 +24,22 @@ class MemesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $memes = Meme::orderBy('id', 'desc')->get();
+        $memes = Meme::orderBy('id', 'desc')->paginate(2);
+
+        if ($memes->currentPage() == 1 && $memes->isEmpty()) return view('memes.empty');
+        if ($memes->isEmpty()) abort(404);
 
         $isAdmin = false;
         if (!is_null(Auth::user()))
             User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
+
+        if ($request->ajax())
+        {
+            $view = view('memes.post', compact('memes','isAdmin'))->render();
+            return response()->json(['html'=>$view]);
+        }
 
         return view('memes.index', ['memes' => $memes, 'isAdmin' => $isAdmin]);
     }

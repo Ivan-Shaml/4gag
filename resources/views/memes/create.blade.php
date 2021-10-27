@@ -7,13 +7,13 @@
         <div class="form-group">
             <label for="title" class="col-sm-2 col-form-label">Title</label>
             <div class="col-sm-15">
-                <input type="text" class="form-control" id="title" name="title" placeholder="Hot Title...">
+                <input required type="text" class="form-control" id="title" name="title" placeholder="Hot Title...">
             </div>
         </div>
         <div class="form-group">
             <div class="col-sm-15">
                 <label for="image">Drop your meme here <i>(Supported image formats are: <code>jpg,png,jpeg,gif</code>)</i></label>
-                <input type="file" class="form-control-file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
+                <input required type="file" class="form-control-file" id="image" name="image" accept="image/png, image/jpeg, image/gif">
             </div>
         </div>
 
