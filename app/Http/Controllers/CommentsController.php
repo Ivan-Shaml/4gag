@@ -6,9 +6,11 @@ use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use mysql_xdevapi\Result;
 use function PHPUnit\Framework\isNull;
 use App\Models\Meme;
 use App\Models\UsersCommentsVotes;
+use App\Models\CommentReplies;
 
 class CommentsController extends Controller
 {
@@ -44,7 +46,7 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, bool $isReply=false)
     {
         $request->validate([
             'comment_text' => 'required',
@@ -52,12 +54,20 @@ class CommentsController extends Controller
         ]);
 
         Meme::find($request->input('meme_id')) ?? abort(404);
-
-        $comment = Comment::create([
-            'comment_text' => $request->input('comment_text'),
-            'meme_id' => $request->input('meme_id'),
-            'user_id' => auth()->user()->getAuthIdentifier(),
-        ]);
+        if($isReply) {
+            $comment = Comment::create([
+                'comment_text' => $request->input('comment_text'),
+                'meme_id' => $request->input('meme_id'),
+                'user_id' => auth()->user()->getAuthIdentifier(),
+                'is_reply' => 1
+            ]);
+        } else {
+            $comment = Comment::create([
+                'comment_text' => $request->input('comment_text'),
+                'meme_id' => $request->input('meme_id'),
+                'user_id' => auth()->user()->getAuthIdentifier(),
+            ]);
+        }
 
         Meme::where('id', $request->input('meme_id'))->increment('comments_count', 1);
 
@@ -78,9 +88,10 @@ class CommentsController extends Controller
         if (!is_null(Auth::user()))
             User::where('id', Auth::user()->getAuthIdentifier())->where('role', 'admin')->first() === null ? $isAdmin = false : $isAdmin = true;
 
-        $comments = Comment::orderBy('id', 'desc')->where('meme_id', $id)->get() ?? abort(404);
+        $comments = Comment::orderBy('id', 'desc')->where('meme_id', $id)->where('is_reply', 0)->get() ?? abort(404);
+        $commentsCount = Comment::orderBy('id', 'desc')->where('meme_id', $id)->count();
         $meme = Meme::find($id) ?? abort(404);
-        return view('comments.show',['comments' => $comments, 'meme' => $meme, 'isAdmin' => $isAdmin]);
+        return view('comments.show',['comments' => $comments, 'meme' => $meme, 'isAdmin' => $isAdmin, 'commentsCount'=>$commentsCount]);
     }
 
     /**
@@ -176,5 +187,36 @@ class CommentsController extends Controller
 
         return json_encode(['comment_id'=>$comment->id ,'up_votes'=>$comment->up_votes_count, 'down_votes'=>$comment->down_votes_count]);
 
+    }
+
+    public function reply($id, Request $request)
+    {
+        Comment::where('id', $id)->first() ?? abort(404);
+
+        $result = $this->store($request, true);
+
+        $decoded_result = json_decode($result, true);
+
+        $decoded_result['parent_comment'] = $id;
+
+        CommentReplies::create([
+            'parent_comment'=>$id,
+            'child_comment'=>$decoded_result['comment_id']
+        ]);
+        Comment::find($id)->increment('replies_count');
+
+        return json_encode($decoded_result);
+    }
+
+    public function showCommentReplies($id)
+    {
+        Comment::where('id', $id)->first() ?? abort(404);
+        $commentReplies = Comment::join('comment_replies', 'comments.id', '=', 'comment_replies.child_comment')
+            ->join('users','comments.user_id', '=', 'users.id' )
+            ->where('parent_comment', '=', $id)
+            ->select('comments.*', 'users.name')
+            ->get();
+
+        return json_encode($commentReplies->toArray());
     }
 }

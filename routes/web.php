@@ -28,5 +28,7 @@ Route::get('/downvote/{id}', [MemesController::class, 'downvote']);
 Route::get('/showmymemes', [MemesController::class, 'showmymemes']);
 Route::get('/comments/upvote/{id}', [CommentsController::class, 'upvote']);
 Route::get('/comments/downvote/{id}', [CommentsController::class, 'downvote']);
+Route::get('/comments/showCommentReplies/{id}', [CommentsController::class, 'showCommentReplies']);
+Route::post('/comments/reply/{id}', [CommentsController::class, 'reply']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

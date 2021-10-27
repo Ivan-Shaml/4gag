@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <h3 class="text-center mt-5 mb-2" id="comments_total_count">{{count($comments)}} Comments</h3>
+    <h3 class="text-center mt-5 mb-2" id="comments_total_count">{{$commentsCount}} Comments</h3>
 
     <div class="container">
         <div class="row d-flex justify-content-center" id="comment_section">
@@ -72,6 +72,18 @@
                                     <i class="fa fa-arrow-down g-pos-rel g-top-1 g-mr-3"></i>
                                 </button>
                                 <span id="comment_down_votes_count{{$comment->id}}" class="text-danger font-weight-bolder">{{ $comment->down_votes_count }}</span>
+                            </li>
+                            @if($comment->replies_count > 0)
+                                <li class="list-inline-item g-ml-20">
+                                    <button class="btn btn-sm btn-dark" onclick="showReplies({{$comment->id}})">
+                                        {{ $comment->replies_count }} Replies
+                                    </button>
+                                </li>
+                            @endif
+                            <li class="list-inline-item g-ml-20">
+                                <button class="btn btn-sm btn-primary" onclick="commentReply({{$comment->id}})">
+                                    <i class="fas fa-reply g-pos-rel g-top-1 g-mr-3"></i> Reply
+                                </button>
                             </li>
                         </ul>
                     </div>

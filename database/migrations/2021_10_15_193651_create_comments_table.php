@@ -20,6 +20,8 @@ class CreateCommentsTable extends Migration
             $table->longText('comment_text');
             $table->unsignedInteger('up_votes_count')->default(0);
             $table->unsignedInteger('down_votes_count')->default(0);
+            $table->boolean('is_reply')->default(0);
+            $table->unsignedInteger('replies_count')->default(0);
             $table->timestamps();
             $table->foreign('meme_id')
                 ->references('id')
